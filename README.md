@@ -14,3 +14,5 @@ Full paper is available [here](https://arxiv.org)
    <td><img align="left" src="images/RFN_samples.gif" width="500"/></td>
   </tr>
  </table>
+
+<img align="left" src="images/pgm.png" width="1000"/></td>
