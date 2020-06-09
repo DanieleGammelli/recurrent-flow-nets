@@ -1,5 +1,3 @@
-<img align="left" src="images/pgm.png" width="1000"/></td>
-
 # Recurrent Flow Networks: Full Repository Coming Soon! (Minimal model code available)
 
 This repository is the official implementation of the RFN, from *Recurrent Flow Networks: A Latent Variable Model for Spatio-Temporal Density Modelling*.
@@ -16,3 +14,5 @@ Full paper is available [here](https://arxiv.org)
    <td><img align="left" src="images/RFN_samples.gif" width="500"/></td>
   </tr>
  </table>
+
+<img align="left" src="images/pgm.png" width="1000"/></td>
