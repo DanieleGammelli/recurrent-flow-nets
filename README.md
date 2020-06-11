@@ -2,7 +2,7 @@
 
 This repository is the official implementation of the RFN, from *Recurrent Flow Networks: A Latent Variable Model for Spatio-Temporal Density Modelling*.
 
-Full paper is available [here](https://arxiv.org)
+Full paper is available [here](https://arxiv.org/abs/2006.05256)
 
 <table>
   <tr>
