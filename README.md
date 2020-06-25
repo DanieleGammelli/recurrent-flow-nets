@@ -34,6 +34,6 @@ The notebook contains:
 
 1. Loading and processing of data
 2. Building RFN object
-3. Train or loading pre-trained model code
+3. Training/Loading pre-trained model code
 4. Evaluation code
 5. Basic visualizations
