@@ -18,6 +18,7 @@ import pyro.distributions as dist
 from pyro.distributions.transforms import permute, BatchNorm
 from pyro.distributions.transforms.affine_coupling import ConditionalAffineCoupling
 import itertools
+from util import Trace_ELBO_Wrapper
 
 class PriorConditioner(nn.Module):
     """
@@ -70,11 +71,11 @@ class ConditionalNormalizingFlow(nn.Module):
         self.use_cuda = use_cuda
         if self.use_cuda:
             self.cuda()
-            nn.ModuleList(self.transforms).cuda()
+#             nn.ModuleList(self.transforms).cuda()
     
     def model(self, X=None, H=None):
         N = len(X) if X is not None else None
-        pyro.module("nf", nn.ModuleList(self.transforms))
+#         pyro.module("nf", nn.ModuleList(self.transforms))
         pyro.module("prior_conditioner", self.prior_conditioner)
         with pyro.plate("data", N):
                 self.cond_flow_dist = self._condition(H)
@@ -208,7 +209,7 @@ class RFN(nn.Module):
         self.decoder = ConditionalNormalizingFlow(input_dim, split_dim, z_dim+lstm_dim, 
                                                   decoder_dim, decoder_layers, flow_length)
         self.encoder = Encoder(z_dim, lstm_dim, encoder_dim)
-        self.extractor = FeatureExtractor(k)
+        self.conv = FeatureExtractor(k)
         self.p_lstm = nn.LSTM(u_dim, lstm_dim, batch_first=True, 
                             num_layers=1, bidirectional=False)
     
@@ -231,8 +232,8 @@ class RFN(nn.Module):
         # if on gpu cuda-ize all PyTorch (sub)modules
         if self.use_cuda:
             self.cuda()
-            nn.ModuleList(self.decoder.transforms).cuda()
-            nn.ModuleList(self.decoder.bns).cuda()
+#             nn.ModuleList(self.decoder.transforms).cuda()
+#             nn.ModuleList(self.decoder.bns).cuda()
             self.decoder.base_dist = dist.Normal(torch.zeros(input_dim).cuda(),
                                          torch.ones(input_dim).cuda())
     
@@ -251,13 +252,13 @@ class RFN(nn.Module):
         # apply FeatureExtractor to 2d spatial representation of the data
         X_extr = torch.zeros((N, T_max, 32), device=U.device)
         for n in range(N):
-            X_extr[n] = self.extractor(U[n]).view(1, T_max, 32)
+            X_extr[n] = self.conv(U[n]).view(1, T_max, 32)
             
         # register all PyTorch (sub)modules with pyro
         # this needs to happen in both the model and guide
         pyro.module("RFN", self)
-        pyro.module("nf_transforms", nn.ModuleList(self.decoder.transforms))
-        pyro.module("nf_batchnorms", nn.ModuleList(self.decoder.bns))
+#         pyro.module("nf_transforms", nn.ModuleList(self.decoder.transforms))
+#         pyro.module("nf_batchnorms", nn.ModuleList(self.decoder.bns))
         
         h_prev = self.h_0.expand(b, self.h_0.size(0)).view(1, b, -1).contiguous()    
         c_prev = self.c_0.expand(b, self.c_0.size(0)).view(1, b, -1).contiguous()
@@ -309,12 +310,12 @@ class RFN(nn.Module):
         # apply FeatureExtractor to 2d spatial representation of the data
         X_extr = torch.zeros((N, T_max, 32), device=U.device)
         for n in range(N):
-            X_extr[n] = self.extractor(U[n]).view(1, T_max, 32)
+            X_extr[n] = self.conv(U[n]).view(1, T_max, 32)
             
         # register all PyTorch (sub)modules with pyro
         pyro.module("RFN", self)
-        pyro.module("nf_transforms", nn.ModuleList(self.decoder.transforms))
-        pyro.module("nf_batchnorms", nn.ModuleList(self.decoder.bns))
+#         pyro.module("nf_transforms", nn.ModuleList(self.decoder.transforms))
+#         pyro.module("nf_batchnorms", nn.ModuleList(self.decoder.bns))
         
         h_prev = self.h_0.expand(b, self.h_0.size(0)).view(1, b, -1).contiguous()    
         c_prev = self.c_0.expand(b, self.c_0.size(0)).view(1, b, -1).contiguous()
@@ -337,7 +338,6 @@ class RFN(nn.Module):
                 # sample z_t from the distribution z_dist
                 with pyro.poutine.scale(scale=self.annealing_factor):
                     z_t = pyro.sample("z_%d" % t, z_dist)
-                    if verbose: print("z_t: ", z_t.shape)
                 z_prev = z_t.view(b, self.z_dim)
         return Z_dists
     
