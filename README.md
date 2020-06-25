@@ -1,4 +1,4 @@
-# Recurrent Flow Networks: Full Repository Coming Soon! (Minimal model code available)
+# Recurrent Flow Networks
 
 This repository is the official implementation of the RFN, from *Recurrent Flow Networks: A Latent Variable Model for Spatio-Temporal Density Modelling*.
 
