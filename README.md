@@ -16,3 +16,24 @@ Full paper is available [here](https://arxiv.org/abs/2006.05256)
  </table>
 
 <img align="left" src="images/pgm.png" width="1000"/></td>
+
+## Summary
+
+This repository contains:
+
+1. `model.py`: RFN model code
+2. `util.py`: utility code
+3. `rfn_saved`, `transforms_saved`, `bns_saved`: pre-trained version of the modules characterizing the RFN
+4. `/data`: folder containing data used for the NYC-P experiment
+
+## Training and Evaluation code
+
+A working Jupyter Notebook is provided in `rfn_nyp.ipynb`, showing a basic usage of the proposed RFN for the NYC-P task (more details in Section 3 of the paper).
+
+The notebook contains:
+
+1. Loading and processing of data
+2. Building RFN object
+3. Train or loading pre-trained model code
+4. Evaluation code
+5. Basic visualizations
